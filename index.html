@@ -1,77 +1,259 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>SAR Crop Mapping Dashboard</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapping Rice Fields with Radar – Karnal, Haryana (Kharif 2025)</title>
+<meta name="description" content="Sentinel-1 radar crop map of Karnal district, Haryana, Kharif 2025: method, accuracy, area statistics and limitations.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f0f7f0;--card:#fff;--tx:#12301f;--mu:#52695b;--ac:#2e7d32;--ac2:#81c784;--bd:#cfe3cf}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1a13;--card:#142419;--tx:#e6f2ea;--mu:#9bb5a5;--bd:#25382c}}
-:root[data-theme="dark"]{--bg:#0d1a13;--card:#142419;--tx:#e6f2ea;--mu:#9bb5a5;--bd:#25382c}
-html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6}
-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:20px;justify-content:center;padding:12px;background:var(--card);border-bottom:1px solid var(--bd);overflow-x:auto;font-size:14px}
-nav a{color:var(--mu);text-decoration:none;white-space:nowrap}nav a:hover{color:var(--ac)}
-.hero{min-height:100vh;display:flex;align-items:center;text-align:center;background:linear-gradient(180deg,rgba(6,25,15,.15),rgba(6,25,15,.85)),url(Hero.png) center/cover}
-.hero div{max-width:1100px;margin:0 auto;padding:48px 24px;color:#fff;width:100%}
-.tag{display:inline-block;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.18);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
-h1{font-size:clamp(32px,6vw,60px);line-height:1.1;margin:14px 0}.hero p{max-width:640px;margin:0 auto;font-size:18px;opacity:.9}
-.btn{display:inline-block;margin-top:12px;padding:12px 22px;background:var(--ac);color:#fff;border-radius:8px;text-decoration:none;font-weight:600}
-section{max-width:1100px;margin:0 auto;padding:64px 24px}
-h2{font-size:30px;margin:0 0 6px}h2::after{content:"";display:block;width:56px;height:4px;margin-top:8px;border-radius:4px;background:linear-gradient(90deg,var(--ac),var(--ac2))}
-.sub{color:var(--mu);margin-bottom:28px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:22px}
-.card h3{margin:0 0 6px;font-size:17px}.card p{margin:0;color:var(--mu);font-size:15px}
-.ic{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-size:22px;margin-bottom:10px;background:rgba(46,125,50,.14)}
-.wide{max-width:none;width:100%;padding:64px 0 0}.wide .in{max-width:1100px;margin:0 auto;padding:0 24px}
-iframe{display:block;width:100vw;height:100vh;min-height:520px;border:0;margin-top:20px;background:#d7ead7}
-.leg{display:flex;gap:18px;flex-wrap:wrap;padding:14px 24px;background:var(--card);border-bottom:1px solid var(--bd);justify-content:center;font-size:14px}
-.sw{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
-@media(max-width:760px){.stats{grid-template-columns:1fr}}
-.donut{max-width:340px;margin:auto;display:block}
-.row{display:flex;gap:12px;align-items:flex-start;margin-bottom:18px}.row b{display:block}
-.big{font-size:22px;font-weight:700}
-footer{text-align:center;padding:32px;color:var(--mu);font-size:14px;border-top:1px solid var(--bd)}
+:root{--bg:#fdf6fa;--card:#fff;--ink:#2d2540;--muted:#6b6280;--line:#eadff0;--accent:#8e6bbf;--pink:#CC79A7;--green:#009E73;--orange:#E69F00;--soft:#f3e9fa}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+a{color:var(--accent)}
+header.hero{background:linear-gradient(135deg,#f6d9ea,#e3d5f5);padding:3.2rem 1.2rem 2.6rem;text-align:center}
+.hero h1{margin:.2rem 0 .6rem;font-size:clamp(1.7rem,5vw,2.8rem)}
+.hero p{max-width:720px;margin:0 auto 1.2rem}
+.tag{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.btn{display:inline-block;background:var(--accent);color:#fff;padding:.65rem 1.3rem;border-radius:999px;text-decoration:none;font-weight:600}
+nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.95);border-bottom:1px solid var(--line);display:flex;gap:.4rem 1rem;flex-wrap:wrap;justify-content:center;padding:.5rem}
+nav a{text-decoration:none;font-size:.9rem;padding:.2rem .5rem}
+main{max-width:1000px;margin:0 auto;padding:0 1rem 3rem}
+section{padding-top:2.4rem}
+h2{margin:0 0 .3rem;font-size:1.6rem}.lead{color:var(--muted);margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem}
+.card h3{margin:.2rem 0 .3rem;font-size:1.05rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.45rem .6rem;text-align:center}
+th{background:var(--soft)}td:first-child,th:first-child{text-align:left}
+.scroll{overflow-x:auto}
+#studymap{height:320px;border-radius:14px;border:1px solid var(--line)}
+iframe.gee{width:100%;height:min(75vh,640px);border:1px solid var(--line);border-radius:14px;background:#fff}
+.swatch{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:.4rem}
+.bar{height:14px;border-radius:7px;background:var(--line);overflow:hidden}.bar>i{display:block;height:100%}
+.note{background:#fff7e0;border-left:4px solid var(--orange);padding:.7rem 1rem;border-radius:8px;font-size:.92rem}
+.warn{background:#fdecec;border-left:4px solid #c0392b;padding:.7rem 1rem;border-radius:8px;font-size:.92rem}
+.todo{background:#fff176;color:#000;padding:0 .3rem;border-radius:3px;font-size:.85em}
+footer{background:#2d2540;color:#e9e1f3;padding:1.6rem 1rem;font-size:.9rem}
+footer a{color:#f6d9ea}footer .in{max-width:1000px;margin:0 auto}
+.cal td{font-size:.82rem;padding:.3rem}.cal .on{background:#cdeee3}.cal .part{background:#fbe8b5}
+@media(max-width:600px){th,td{padding:.35rem .4rem;font-size:.8rem}}
+</style>
+</head>
+<body>
+<header class="hero" id="top">
+  <div class="tag">Sentinel-1 radar · Kharif 2025 · Karnal, Haryana, India</div>
+  <h1>Seeing Rice Fields Through the Clouds</h1>
+  <p>We used free radar images from a European satellite to map where crops were actively growing in Karnal district during the 2025 monsoon (Kharif) season, and we tested how trustworthy the map is.</p>
+  <a class="btn" href="#map">Explore the map</a>
+</header>
+<nav aria-label="Sections">
+  <a href="#sar">What is SAR?</a><a href="#area">Study area</a><a href="#data">Data &amp; method</a>
+  <a href="#map">Map</a><a href="#accuracy">Accuracy</a><a href="#stats">Area</a><a href="#signatures">Crop signals</a><a href="#limits">Limitations</a><a href="#about">About</a>
+</nav>
+<main>
 
-/* paddy watermarks */
-body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%232e7d32' stroke-opacity='.17' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M60 240C58 170 66 110 100 50C122 56 130 84 126 112'/%3E%3Cpath d='M130 240C128 180 138 120 172 70C194 76 200 100 196 126'/%3E%3Cpath d='M20 240C20 190 28 150 44 120C58 124 62 142 60 160'/%3E%3C/g%3E%3Cg fill='%232e7d32' fill-opacity='.17'%3E%3Cpath d='M60 210C30 190 16 160 12 135C40 150 56 175 60 210Z'/%3E%3Cpath d='M130 215C160 195 175 170 180 150C150 160 134 185 130 215Z'/%3E%3Ccircle cx='110' cy='56' r='4'/%3E%3Ccircle cx='119' cy='68' r='4'/%3E%3Ccircle cx='124' cy='82' r='4'/%3E%3Ccircle cx='126' cy='97' r='4'/%3E%3Ccircle cx='126' cy='111' r='4'/%3E%3Ccircle cx='182' cy='76' r='4'/%3E%3Ccircle cx='191' cy='88' r='4'/%3E%3Ccircle cx='196' cy='102' r='4'/%3E%3Ccircle cx='196' cy='116' r='4'/%3E%3Ccircle cx='53' cy='126' r='3.5'/%3E%3Ccircle cx='58' cy='140' r='3.5'/%3E%3C/g%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%232e7d32' stroke-opacity='.17' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M60 240C58 170 66 110 100 50C122 56 130 84 126 112'/%3E%3Cpath d='M130 240C128 180 138 120 172 70C194 76 200 100 196 126'/%3E%3Cpath d='M20 240C20 190 28 150 44 120C58 124 62 142 60 160'/%3E%3C/g%3E%3Cg fill='%232e7d32' fill-opacity='.17'%3E%3Cpath d='M60 210C30 190 16 160 12 135C40 150 56 175 60 210Z'/%3E%3Cpath d='M130 215C160 195 175 170 180 150C150 160 134 185 130 215Z'/%3E%3Ccircle cx='110' cy='56' r='4'/%3E%3Ccircle cx='119' cy='68' r='4'/%3E%3Ccircle cx='124' cy='82' r='4'/%3E%3Ccircle cx='126' cy='97' r='4'/%3E%3Ccircle cx='126' cy='111' r='4'/%3E%3Ccircle cx='182' cy='76' r='4'/%3E%3Ccircle cx='191' cy='88' r='4'/%3E%3Ccircle cx='196' cy='102' r='4'/%3E%3Ccircle cx='196' cy='116' r='4'/%3E%3Ccircle cx='53' cy='126' r='3.5'/%3E%3Ccircle cx='58' cy='140' r='3.5'/%3E%3C/g%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left bottom,right bottom;background-size:300px;background-attachment:fixed}
-section{position:relative}section>*{position:relative;z-index:1}
-section::before,section::after{content:"";position:absolute;z-index:0;width:240px;height:240px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%232e7d32' stroke-opacity='.17' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M60 240C58 170 66 110 100 50C122 56 130 84 126 112'/%3E%3Cpath d='M130 240C128 180 138 120 172 70C194 76 200 100 196 126'/%3E%3Cpath d='M20 240C20 190 28 150 44 120C58 124 62 142 60 160'/%3E%3C/g%3E%3Cg fill='%232e7d32' fill-opacity='.17'%3E%3Cpath d='M60 210C30 190 16 160 12 135C40 150 56 175 60 210Z'/%3E%3Cpath d='M130 215C160 195 175 170 180 150C150 160 134 185 130 215Z'/%3E%3Ccircle cx='110' cy='56' r='4'/%3E%3Ccircle cx='119' cy='68' r='4'/%3E%3Ccircle cx='124' cy='82' r='4'/%3E%3Ccircle cx='126' cy='97' r='4'/%3E%3Ccircle cx='126' cy='111' r='4'/%3E%3Ccircle cx='182' cy='76' r='4'/%3E%3Ccircle cx='191' cy='88' r='4'/%3E%3Ccircle cx='196' cy='102' r='4'/%3E%3Ccircle cx='196' cy='116' r='4'/%3E%3Ccircle cx='53' cy='126' r='3.5'/%3E%3Ccircle cx='58' cy='140' r='3.5'/%3E%3C/g%3E%3C/svg%3E") no-repeat center/contain;pointer-events:none}
-section::before{right:0;bottom:0}section::after{left:0;top:20px;transform:scaleX(-1)}
-#stats{background:linear-gradient(180deg,transparent,rgba(129,199,132,.18))}
-footer{padding-top:90px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%232e7d32' stroke-opacity='.17' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M60 240C58 170 66 110 100 50C122 56 130 84 126 112'/%3E%3Cpath d='M130 240C128 180 138 120 172 70C194 76 200 100 196 126'/%3E%3Cpath d='M20 240C20 190 28 150 44 120C58 124 62 142 60 160'/%3E%3C/g%3E%3Cg fill='%232e7d32' fill-opacity='.17'%3E%3Cpath d='M60 210C30 190 16 160 12 135C40 150 56 175 60 210Z'/%3E%3Cpath d='M130 215C160 195 175 170 180 150C150 160 134 185 130 215Z'/%3E%3Ccircle cx='110' cy='56' r='4'/%3E%3Ccircle cx='119' cy='68' r='4'/%3E%3Ccircle cx='124' cy='82' r='4'/%3E%3Ccircle cx='126' cy='97' r='4'/%3E%3Ccircle cx='126' cy='111' r='4'/%3E%3Ccircle cx='182' cy='76' r='4'/%3E%3Ccircle cx='191' cy='88' r='4'/%3E%3Ccircle cx='196' cy='102' r='4'/%3E%3Ccircle cx='196' cy='116' r='4'/%3E%3Ccircle cx='53' cy='126' r='3.5'/%3E%3Ccircle cx='58' cy='140' r='3.5'/%3E%3C/g%3E%3C/svg%3E") repeat-x bottom/150px}
-h2::after{background:linear-gradient(90deg,#1b5e20,#81c784)}
-.btn{background:linear-gradient(90deg,#1b5e20,#43a047)}
-.hero{background-color:#14301c}
-</style></head><body>
-<nav><a href="#top">Home</a><a href="#sar">SAR &amp; Crop Mapping</a><a href="#area">Study Area</a><a href="#map">Map</a><a href="#stats">Statistics</a></nav>
-<header class="hero" id="top"><div><span class="tag">Sentinel-1 · Kharif Season · India</span>
-<h1>SAR Crop Mapping &amp; Classification</h1><p>Multi-temporal Sentinel-1 radar data at 10 m resolution to map paddy, fallow land and built-up areas, cloud or no cloud.</p><a class="btn" href="#map">Explore the map</a></div></header>
+<section id="sar">
+  <h2>What is SAR, in plain words?</h2>
+  <p class="lead">Synthetic Aperture Radar is a satellite “torch” that works at night and through cloud.</p>
+  <p>Ordinary satellite photos need sunlight and a clear sky, but the monsoon is cloudy. Sentinel-1 sends out its own microwave pulses and records how much bounces <em>back</em> to the satellite. That returned signal is called <strong>backscatter</strong>. It depends on how rough, wet and tall the surface is. Taking a picture every few days across a whole season (<strong>multi-temporal</strong> monitoring) lets us watch a field change from bare soil to flooded to green and tall.</p>
+  <div class="grid">
+    <div class="card"><h3>📡 Backscatter (VV / VH)</h3>VV and VH are two radar “viewing modes”. VH reacts strongly to leafy, stalky plants; VV reacts more to the ground surface.</div>
+    <div class="card"><h3>💧 Flooded paddy</h3>Smooth standing water acts like a mirror and bounces the beam away, so early-season paddy looks dark.</div>
+    <div class="card"><h3>🌾 Growing crop</h3>As rice grows, leaves and stems scatter more energy back, so the signal climbs through the season.</div>
+    <div class="card"><h3>🕒 Change over time</h3>Fields that stay dark or flat are likely fallow; fields that rise and fall like rice are likely active crop.</div>
+  </div>
+</section>
 
-<section id="sar"><h2>About Sentinel-1 SAR</h2><p class="sub">How radar sees crops</p>
-<p>Sentinel-1 is a European Space Agency (Copernicus) mission carrying a C-band Synthetic Aperture Radar. Unlike optical satellites, it sends its own microwave pulses and records what scatters back, so it works day and night and sees through clouds, which is vital during the cloudy Indian monsoon (Kharif) season.</p>
-<div class="grid" style="margin-top:24px">
-<div class="card"><div class="ic">📡</div><h3>Backscatter (VV / VH)</h3><p>Strength of the returned signal. Rough, vegetated surfaces scatter more energy back to the sensor.</p></div>
-<div class="card"><div class="ic">💧</div><h3>Flooded paddy</h3><p>Standing water acts like a mirror (specular reflection), giving very low backscatter early in the season.</p></div>
-<div class="card"><div class="ic">🌾</div><h3>Crop growth</h3><p>As rice grows, canopy structure increases backscatter, creating a distinctive temporal signature.</p></div>
-<div class="card"><div class="ic">🕒</div><h3>Temporal change</h3><p>Comparing images across the season separates active crops from fallow or bare land and built-up areas.</p></div></div></section>
+<section id="area">
+  <h2>Study area: Karnal district, Haryana</h2>
+  <p class="lead">A rice-and-wheat belt in the Indo-Gangetic plain.</p>
+  <div id="studymap" role="img" aria-label="Map showing the location of Karnal district in Haryana, northern India"></div>
+  <p style="font-size:.85rem;color:var(--muted)">Boundary: district boundary asset used in Google Earth Engine <span class="todo">[state original source, e.g. Survey of India / SOI-based district layer]</span>. Basemap © OpenStreetMap contributors.</p>
+  <p><strong>Why Karnal?</strong> Karnal is a major paddy (including basmati) district, so the Kharif crop has a strong, recognisable radar pattern, and earlier published work (Mishra et&nbsp;al., 2022) gives a regional benchmark. <span class="todo">[add 1–2 sentences of your own justification: field size, canal irrigation, data availability]</span></p>
+  <h3>Typical Kharif crop calendar (rice)</h3>
+  <div class="scroll"><table class="cal" aria-label="Typical Kharif rice crop calendar, May to November">
+    <tr><th>Stage</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th></tr>
+    <tr><td>Nursery / land preparation, flooding</td><td class="part"></td><td class="on"></td><td class="part"></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Transplanting &amp; early growth</td><td></td><td class="on"></td><td class="on"></td><td class="part"></td><td></td><td></td><td></td></tr>
+    <tr><td>Tillering / vegetative</td><td></td><td></td><td class="on"></td><td class="on"></td><td class="part"></td><td></td><td></td></tr>
+    <tr><td>Flowering / grain filling</td><td></td><td></td><td></td><td class="part"></td><td class="on"></td><td class="part"></td><td></td></tr>
+    <tr><td>Maturity &amp; harvest</td><td></td><td></td><td></td><td></td><td class="part"></td><td class="on"></td><td class="part"></td></tr>
+  </table></div>
+  <p style="font-size:.85rem;color:var(--muted)">Dark green = main period, amber = partial. Indicative only; dates vary by variety and farmer. <span class="todo">[cite your crop-calendar source, e.g. ICAR / Haryana Agriculture Dept / FAO crop calendar]</span></p>
+</section>
 
-<section id="area" style="padding-top:0"><h2>Study Area</h2><p class="sub">Where the analysis was carried out</p>
-<div class="card"><p>The study covers an agricultural region in India with a total mapped extent of about <b>2.48 lakh hectares</b> (≈ 2,477 km²), dominated by Kharif paddy cultivation in the Karnal district of Haryana. Classification uses Sentinel-1 time-series for the Kharif season, processed in Google Earth Engine.</p></div></section>
+<section id="data">
+  <h2>Data and method</h2>
+  <div class="scroll"><table>
+    <tr><th>Item</th><th>Detail</th></tr>
+    <tr><td>Satellite / product</td><td>Sentinel-1 C-band SAR, GRD, Interferometric Wide mode (Google Earth Engine: COPERNICUS/S1_GRD)</td></tr>
+    <tr><td>Polarisations / orbit</td><td>VV + VH; descending pass only (consistent viewing geometry)</td></tr>
+    <tr><td>Season</td><td>1 June – 31 October 2025 (Kharif)</td></tr>
+    <tr><td>Scenes used</td><td><span class="todo" id="n-scenes">[N scenes; relative orbit(s) …; per month …]</span></td></tr>
+    <tr><td>Pre-processing</td><td>GEE-provided thermal-noise removal, calibration, terrain correction, dB scale; 30 m focal-median speckle filter on each scene; monthly median composites (June–October)</td></tr>
+    <tr><td>Features</td><td>10 layers: VV and VH for each of 5 months (<span class="todo">add VH−VV if you enabled it</span>)</td></tr>
+    <tr><td>Classifier</td><td>Random Forest, 100 trees (Google Earth Engine <code>smileRandomForest</code>)</td></tr>
+    <tr><td>Classes</td><td>
+      <span class="swatch" style="background:#009E73"></span>Active vegetation (mostly paddy) &nbsp;
+      <span class="swatch" style="background:#E69F00"></span>Fallow / bare land &nbsp;
+      <span class="swatch" style="background:#CC79A7"></span>Non-crop / built-up</td></tr>
+    <tr><td>Reference data</td><td><span class="todo">[how you drew the reference polygons: high-res imagery date/source, field visits, Sentinel-2 NDVI check, etc.]</span></td></tr>
+  </table></div>
+  <p><strong>Training and validation.</strong> Reference fields were split <em>by field</em> (not by pixel): about 70% of fields for training and 30% held back for testing, separately for each class. This means no field contributes pixels to both sets, which would otherwise make the map look better than it is. Counts: <span class="todo" id="n-samples">[training fields/pixels and validation fields/pixels per class]</span>.</p>
+</section>
 
-<section class="wide" id="map"><div class="in"><h2>Crop Classification Map</h2><p class="sub">Interactive Google Earth Engine app — pan, zoom and inspect classes.</p></div>
-<div class="leg"><span><i class="sw" style="background:#1b7a3a"></i>Active vegetation (paddy)</span><span><i class="sw" style="background:#7bc47f"></i>Fallow / bare land</span><span><i class="sw" style="background:#c5e1a5"></i>Non-crop / built-up</span></div>
-<iframe src="https://tanisha-ee-492217.projects.earthengine.app/view/sar-mapping" title="SAR crop mapping GEE app" loading="lazy"></iframe>
-<div style="text-align:center;padding:14px"><a href="https://tanisha-ee-492217.projects.earthengine.app/view/sar-mapping" target="_blank" rel="noopener" style="color:var(--ac)">Map not loading? Open the full app ↗</a></div></section>
+<section id="map">
+  <h2>Crop classification map</h2>
+  <p class="lead">Pan, zoom, switch layers and change opacity. Legend, scale bar and north arrow are inside the map.</p>
+  <iframe class="gee" src="https://tanisha-ee-492217.projects.earthengine.app/view/sar-mapping" title="Interactive crop classification map of Karnal district" loading="lazy"></iframe>
+  <p><a href="https://tanisha-ee-492217.projects.earthengine.app/view/sar-mapping" target="_blank" rel="noopener">Map not loading? Open the full app ↗</a></p>
+  <p><span class="swatch" style="background:#009E73"></span>Active vegetation (paddy) &nbsp;
+     <span class="swatch" style="background:#E69F00"></span>Fallow / bare land &nbsp;
+     <span class="swatch" style="background:#CC79A7"></span>Non-crop / built-up</p>
+  <p style="font-size:.85rem;color:var(--muted)">Map data: contains modified Copernicus Sentinel-1 data (2025), processed in Google Earth Engine. Season: Kharif 2025. Resolution: 10 m.</p>
+</section>
 
-<section id="stats"><h2>Area Statistics &amp; Classes</h2><p class="sub">Total mapped area: 247,735.40 ha</p>
-<div class="stats"><svg class="donut" viewBox="0 0 200 200" role="img" aria-label="Pie chart of land cover area share">
-<g transform="rotate(-90 100 100)" fill="none" stroke-width="42">
-<circle cx="100" cy="100" r="60" stroke="#1b7a3a" stroke-dasharray="307 70" stroke-dashoffset="0"/>
-<circle cx="100" cy="100" r="60" stroke="#7bc47f" stroke-dasharray="39.4 337.6" stroke-dashoffset="-307"/>
-<circle cx="100" cy="100" r="60" stroke="#c5e1a5" stroke-dasharray="30.6 346.4" stroke-dashoffset="-346.4"/></g>
-<text x="100" y="97" text-anchor="middle" font-size="22" font-weight="700" fill="currentColor">81.4%</text><text x="100" y="116" text-anchor="middle" font-size="11" fill="currentColor">paddy</text></svg>
-<div>
-<div class="row"><i class="sw" style="background:#1b7a3a;width:18px;height:18px;margin-top:6px"></i><div><b>Active Vegetation (Paddy) <span class="big">201,731.80 ha · 81.4%</span></b><span style="color:var(--mu)">Fields with high, growing radar backscatter through the season: standing rice crop.</span></div></div>
-<div class="row"><i class="sw" style="background:#7bc47f;width:18px;height:18px;margin-top:6px"></i><div><b>Fallow / Bare Land <span class="big">25,866.56 ha · 10.4%</span></b><span style="color:var(--mu)">Uncultivated or bare soil with low, stable backscatter and no crop growth signature.</span></div></div>
-<div class="row"><i class="sw" style="background:#c5e1a5;width:18px;height:18px;margin-top:6px"></i><div><b>Non-Crop / Built-up <span class="big">20,137.04 ha · 8.1%</span></b><span style="color:var(--mu)">Settlements, roads and other non-agricultural surfaces with strong, constant backscatter.</span></div></div>
-</div></div></section>
-<footer>Data: Copernicus Sentinel-1 · Processing: Google Earth Engine · Kharif season, India</footer>
-</body></html>
+<section id="accuracy">
+  <h2>How reliable is the map?</h2>
+  <p class="lead">Tested on fields the model never saw during training.</p>
+  <div class="note" id="acc-note">Fill the <code>RESULTS</code> block at the bottom of this file with the numbers printed by the GEE script. Until then this section is empty on purpose, so no placeholder number is mistaken for a result.</div>
+  <h3>Confusion matrix (validation pixels)</h3>
+  <div class="scroll"><table id="cm"></table></div>
+  <p style="font-size:.85rem;color:var(--muted)">Rows = what the field really is (reference). Columns = what the map says. Numbers on the diagonal are correct.</p>
+  <h3>Accuracy measures</h3>
+  <div class="scroll"><table id="metrics"></table></div>
+  <p style="font-size:.9rem"><strong>Producer’s accuracy</strong>: of the real fields of a class, how many the map found. <strong>User’s accuracy</strong>: of the places the map labels as a class, how many really are. <strong>F1</strong>: a balance of both.</p>
+  <p id="confusion-text"><span class="todo">[2–3 sentences: which classes are confused and why, e.g. fallow vs. non-crop (both low/steady signal), early-season flooded paddy vs. water]</span></p>
+</section>
+
+<section id="stats">
+  <h2>How much land is in each class?</h2>
+  <p class="lead">Total mapped area: 247,735.40 ha (≈ 2,477 km²).</p>
+  <div class="scroll"><table id="areas"></table></div>
+  <p class="note">These are <strong>map areas</strong> (pixels counted × 10 m × 10 m). Because no map is perfect, true areas will differ. Treat the numbers as estimates. <span class="todo">[add error-adjusted area ± CI if you compute it]</span></p>
+</section>
+
+<section id="signatures">
+  <h2>What crops “look like” to radar</h2>
+  <p class="lead">Average backscatter (dB) of each class through the season.</p>
+  <div style="position:relative;height:340px"><canvas id="sigchart" role="img" aria-label="Line chart of monthly VH backscatter for paddy, fallow and non-crop classes, June to October 2025"></canvas></div>
+  <p id="sig-msg" class="note"></p>
+  <p><span class="todo">[2–3 sentences interpreting the curves: e.g. paddy VH rises as canopy builds, then falls at harvest; fallow stays low and flat; built-up stays high and steady]</span></p>
+</section>
+
+<section id="limits">
+  <h2>Limitations and responsible use</h2>
+  <ul>
+    <li><strong>“Active vegetation” is not proof of rice.</strong> Other green crops (sugarcane, maize, fodder) and trees can look similar to radar. The map separates <em>active growth</em> from fallow and non-crop; it does not verify crop species.</li>
+    <li><strong>Mixed pixels and small fields.</strong> A 10 m pixel can straddle field edges, bunds, roads or canals.</li>
+    <li><strong>Water and moisture.</strong> Flooded fields and fresh rain change backscatter and can mimic other classes.</li>
+    <li><strong>Season window.</strong> Data end 31 October 2025; late-harvested varieties may be partly missed.</li>
+    <li><strong>Reference data.</strong> <span class="todo">[describe size, date and limits of your reference set]</span></li>
+    <li><strong>Do not use</strong> this map for field-level decisions, insurance or compensation claims, legal boundaries or official crop statistics. It is a student research product, not an official survey.</li>
+  </ul>
+</section>
+
+<section id="about">
+  <h2>About this project</h2>
+  <p><strong>Tanisha</strong> · M.Sc. Geoinformatics (Semester III) · Bharati Vidyapeeth Institute of Environment Education and Research (BVIEER), Pune · Subject: Advanced Remote Sensing · Coordinator: Dr. Aravinth R · 2026</p>
+  <p>Code and documentation: <a href="https://github.com/biyanitanisha/SAR-crop-mapping" target="_blank" rel="noopener">github.com/biyanitanisha/SAR-crop-mapping</a></p>
+  <p><strong>AI-use statement:</strong> <span class="todo">[1–2 lines; match your AI-use declaration in the report]</span></p>
+  <h3>References</h3>
+  <ol style="font-size:.9rem">
+    <li>Veloso, A. et al. (2017). Understanding the temporal behavior of crops using Sentinel-1 and Sentinel-2-like data for agricultural applications. <em>Remote Sensing of Environment</em>, 199, 415–426. <a href="https://doi.org/10.1016/j.rse.2017.07.015">doi</a></li>
+    <li>Bargiel, D. (2017). A new method for crop classification combining time series of radar images and crop phenology information. <em>Remote Sensing of Environment</em>, 198, 369–383. <a href="https://doi.org/10.1016/j.rse.2017.06.022">doi</a></li>
+    <li>Xu, L. et al. (2019). <em>Remote Sensing</em>, 11(1), 53. <a href="https://doi.org/10.3390/rs11010053">doi</a> <span class="todo">[confirm exact title]</span></li>
+    <li>Mishra et al. (2022). Karnal district crop classification, Sentinel-1 &amp; machine learning. <em>Environmental Monitoring and Assessment</em>. <a href="https://doi.org/10.1007/s10661-022-10591-x">doi</a> <span class="todo">[confirm title/authors/DOI]</span></li>
+    <li>Rege et al. (2022). Mapping cashew monocultures in the Western Ghats using optical and radar remote sensing data. <em>Remote Sensing Applications: Society and Environment</em>, 28, 100861. <a href="https://doi.org/10.1016/j.rsase.2022.100861">doi</a></li>
+    <li>Contains modified Copernicus Sentinel data (2025). Google Earth Engine (Gorelick et al., 2017). Leaflet; © OpenStreetMap contributors.</li>
+  </ol>
+</section>
+</main>
+<footer><div class="in">SAR Crop Mapping · Karnal, Kharif 2025 · Student project, BVIEER Pune · <a href="#top">Back to top ↑</a></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* =====================================================================
+   EDIT ONLY THIS BLOCK. Paste numbers printed by the GEE script (v2).
+   Class order everywhere: 0 = Non-crop, 1 = Active vegetation, 2 = Fallow
+   ===================================================================== */
+const CLASSES = ["Non-crop / built-up", "Active vegetation (paddy)", "Fallow / bare land"];
+const COLORS  = ["#CC79A7", "#009E73", "#E69F00"];
+
+const RESULTS = {
+  // 3x3 matrix: rows = reference, cols = predicted. Example shape: [[a,b,c],[d,e,f],[g,h,i]]
+  confusion: null,
+  overall: null,                     // e.g. 0.912  (overall accuracy, 0-1)
+  producers: null,                   // [PA0, PA1, PA2]  (0-1)
+  users: null,                       // [UA0, UA1, UA2]  (0-1)
+  f1: null,                          // [F1_0, F1_1, F1_2]
+  kappa: null                        // optional; leave null if not justified
+};
+
+// Monthly mean backscatter (dB) per class from the GEE "Signature table"
+const SIGNATURES = {
+  months: ["Jun", "Jul", "Aug", "Sep", "Oct"],
+  VH: null,   // e.g. { 0:[..5 values..], 1:[..], 2:[..] }
+  VV: null
+};
+
+// Area in hectares from GEE "Area by class" (already from your published map)
+const AREA_HA = [20137.04, 201731.80, 25866.56];
+/* ===================== end of edit block ============================ */
+
+// ---- Study-area map (Leaflet). Optional boundary: put data/karnal.geojson in repo
+const map = L.map('studymap', {scrollWheelZoom:false}).setView([29.69, 76.99], 9);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {maxZoom:18, attribution:'© OpenStreetMap contributors'}).addTo(map);
+L.marker([29.6857, 76.9905]).addTo(map).bindPopup('Karnal city');
+fetch('data/karnal.geojson').then(r => r.ok ? r.json() : null).then(g => {
+  if (g) { const l = L.geoJSON(g, {style:{color:'#8e6bbf', weight:2, fillOpacity:.1}}).addTo(map); map.fitBounds(l.getBounds()); }
+}).catch(() => {});
+L.control.scale({imperial:false}).addTo(map);
+const N = L.control({position:'topright'});
+N.onAdd = () => { const d = L.DomUtil.create('div'); d.innerHTML = '<div style="background:#fff;padding:2px 8px;border-radius:6px;text-align:center;font-weight:700">▲<br>N</div>'; return d; };
+N.addTo(map);
+
+// ---- Area table (works now)
+(function(){
+  const tot = AREA_HA.reduce((a,b)=>a+b,0), t = document.getElementById('areas');
+  let h = '<tr><th>Class</th><th>Area (ha)</th><th>Share</th><th style="min-width:120px">&nbsp;</th></tr>';
+  AREA_HA.forEach((a,i)=>{ const p = a/tot*100;
+    h += `<tr><td><span class="swatch" style="background:${COLORS[i]}"></span>${CLASSES[i]}</td><td>${a.toLocaleString('en-IN',{minimumFractionDigits:2})}</td><td>${p.toFixed(1)}%</td><td><div class="bar"><i style="width:${p}%;background:${COLORS[i]}"></i></div></td></tr>`; });
+  h += `<tr><th>Total</th><th>${tot.toLocaleString('en-IN',{minimumFractionDigits:2})}</th><th>100%</th><th></th></tr>`;
+  t.innerHTML = h;
+})();
+
+// ---- Accuracy tables (render only when real numbers are provided)
+(function(){
+  const R = RESULTS; if (!R.confusion) return;
+  document.getElementById('acc-note').innerHTML =
+    `<strong>Overall accuracy: ${(R.overall*100).toFixed(1)}%</strong> on independent validation fields` + (R.kappa!=null ? ` · Kappa ${R.kappa.toFixed(2)}` : '') +
+    `. Overall accuracy hides class differences, so see the per-class table.`;
+  let h = '<tr><th>Reference ↓ / Map →</th>' + CLASSES.map(c=>`<th>${c}</th>`).join('') + '<th>Total</th></tr>';
+  R.confusion.forEach((row,i)=>{ h += `<tr><td>${CLASSES[i]}</td>` + row.map((v,j)=>`<td${i===j?' style="background:#cdeee3;font-weight:700"':''}>${v}</td>`).join('') + `<td>${row.reduce((a,b)=>a+b,0)}</td></tr>`; });
+  document.getElementById('cm').innerHTML = h;
+  let m = '<tr><th>Class</th><th>Producer’s accuracy</th><th>User’s accuracy</th><th>F1-score</th></tr>';
+  CLASSES.forEach((c,i)=>{ m += `<tr><td>${c}</td><td>${(R.producers[i]*100).toFixed(1)}%</td><td>${(R.users[i]*100).toFixed(1)}%</td><td>${R.f1[i].toFixed(3)}</td></tr>`; });
+  document.getElementById('metrics').innerHTML = m;
+})();
+
+// ---- Temporal signature chart
+(function(){
+  const S = SIGNATURES, msg = document.getElementById('sig-msg');
+  if (!S.VH) { msg.textContent = 'Chart will appear once you paste the monthly values from the GEE signature table into SIGNATURES.'; return; }
+  msg.style.display = 'none';
+  const ds = [];
+  [0,1,2].forEach(i => {
+    ds.push({label: CLASSES[i]+' – VH', data:S.VH[i], borderColor:COLORS[i], backgroundColor:COLORS[i], tension:.25});
+    if (S.VV) ds.push({label: CLASSES[i]+' – VV', data:S.VV[i], borderColor:COLORS[i], backgroundColor:COLORS[i], borderDash:[6,4], tension:.25});
+  });
+  new Chart(document.getElementById('sigchart'), {type:'line', data:{labels:S.months, datasets:ds},
+    options:{maintainAspectRatio:false, scales:{y:{title:{display:true,text:'Backscatter (dB)'}}, x:{title:{display:true,text:'Month, 2025'}}}}});
+})();
+</script>
+</body>
+</html>
