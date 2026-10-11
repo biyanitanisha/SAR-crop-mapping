@@ -7,10 +7,10 @@ html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6}
 nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:20px;justify-content:center;padding:12px;background:var(--card);border-bottom:1px solid var(--bd);overflow-x:auto;font-size:14px}
 nav a{color:var(--mu);text-decoration:none;white-space:nowrap}nav a:hover{color:var(--ac)}
-.hero{min-height:88vh;display:flex;align-items:flex-end;background:linear-gradient(180deg,rgba(6,25,15,.15),rgba(6,25,15,.85)),url(hero.png) center/cover}
+.hero{min-height:100vh;display:flex;align-items:center;text-align:center;background:linear-gradient(180deg,rgba(6,25,15,.15),rgba(6,25,15,.85)),url(Hero.png) center/cover}
 .hero div{max-width:1100px;margin:0 auto;padding:48px 24px;color:#fff;width:100%}
 .tag{display:inline-block;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.18);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
-h1{font-size:clamp(32px,6vw,60px);line-height:1.1;margin:14px 0}.hero p{max-width:640px;font-size:18px;opacity:.9}
+h1{font-size:clamp(32px,6vw,60px);line-height:1.1;margin:14px 0}.hero p{max-width:640px;margin:0 auto;font-size:18px;opacity:.9}
 .btn{display:inline-block;margin-top:12px;padding:12px 22px;background:var(--ac);color:#fff;border-radius:8px;text-decoration:none;font-weight:600}
 section{max-width:1100px;margin:0 auto;padding:64px 24px}
 h2{font-size:30px;margin:0 0 6px}h2::after{content:"";display:block;width:56px;height:4px;margin-top:8px;border-radius:4px;background:linear-gradient(90deg,var(--ac),var(--ac2))}
@@ -19,8 +19,8 @@ h2{font-size:30px;margin:0 0 6px}h2::after{content:"";display:block;width:56px;h
 .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:22px}
 .card h3{margin:0 0 6px;font-size:17px}.card p{margin:0;color:var(--mu);font-size:15px}
 .ic{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-size:22px;margin-bottom:10px;background:rgba(46,125,50,.14)}
-.wide{max-width:none;padding:64px 0 0}.wide .in{max-width:1100px;margin:0 auto;padding:0 24px}
-iframe{display:block;width:100%;height:80vh;min-height:480px;border:0;margin-top:20px;background:#d7ead7}
+.wide{max-width:none;width:100%;padding:64px 0 0}.wide .in{max-width:1100px;margin:0 auto;padding:0 24px}
+iframe{display:block;width:100vw;height:100vh;min-height:520px;border:0;margin-top:20px;background:#d7ead7}
 .leg{display:flex;gap:18px;flex-wrap:wrap;padding:14px 24px;background:var(--card);border-bottom:1px solid var(--bd);justify-content:center;font-size:14px}
 .sw{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
@@ -54,7 +54,7 @@ h2::after{background:linear-gradient(90deg,#1b5e20,#81c784)}
 <div class="card"><div class="ic">🕒</div><h3>Temporal change</h3><p>Comparing images across the season separates active crops from fallow or bare land and built-up areas.</p></div></div></section>
 
 <section id="area" style="padding-top:0"><h2>Study Area</h2><p class="sub">Where the analysis was carried out</p>
-<div class="card"><p>The study covers an agricultural region in India with a total mapped extent of about <b>2.48 lakh hectares</b> (≈ 2,477 km²), dominated by Kharif paddy cultivation in the Karnal district of Haryana,, India. Classification uses Sentinel-1 time-series for the Kharif season, processed in Google Earth Engine.</p></div></section>
+<div class="card"><p>The study covers an agricultural region in India with a total mapped extent of about <b>2.48 lakh hectares</b> (≈ 2,477 km²), dominated by Kharif paddy cultivation. [Edit: add district/state name, river basin, climate and soil details here.] Classification uses Sentinel-1 time-series for the Kharif season, processed in Google Earth Engine.</p></div></section>
 
 <section class="wide" id="map"><div class="in"><h2>Crop Classification Map</h2><p class="sub">Interactive Google Earth Engine app — pan, zoom and inspect classes.</p></div>
 <div class="leg"><span><i class="sw" style="background:#1b7a3a"></i>Active vegetation (paddy)</span><span><i class="sw" style="background:#7bc47f"></i>Fallow / bare land</span><span><i class="sw" style="background:#c5e1a5"></i>Non-crop / built-up</span></div>
