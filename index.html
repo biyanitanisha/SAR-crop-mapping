@@ -127,7 +127,6 @@ footer .in{max-width:1400px;margin:0 auto}
     <tr><td>Satellite / product</td><td>Sentinel-1 C-band SAR, GRD, Interferometric Wide mode (Google Earth Engine: COPERNICUS/S1_GRD)</td></tr>
     <tr><td>Polarisations / orbit</td><td>VV + VH; descending pass only (consistent viewing geometry)</td></tr>
     <tr><td>Season</td><td>1 June – 31 October 2025 (Kharif)</td></tr>
-    <tr><td>Scenes used</td><td><span class="todo" id="n-scenes">[N scenes; relative orbit(s) …; per month …]</span></td></tr>
     <tr><td>Pre-processing</td><td>GEE-provided thermal-noise removal, calibration, terrain correction, dB scale; 30 m focal-median speckle filter on each scene; monthly median composites (June–October)</td></tr>
     <tr><td>Features</td><td>10 layers: VV and VH for each of 5 months</td></tr>
     <tr><td>Classifier</td><td>Random Forest, 100 trees (Google Earth Engine <code>smileRandomForest</code>)</td></tr>
@@ -135,7 +134,6 @@ footer .in{max-width:1400px;margin:0 auto}
       <span class="swatch" style="background:#2e7d32"></span>Active vegetation (mostly paddy) &nbsp;
       <span class="swatch" style="background:#d97706"></span>Fallow / bare land &nbsp;
       <span class="swatch" style="background:#8d6e63"></span>Non-crop / built-up</td></tr>
-    <tr><td>Reference data</td><td><span class="todo">[how you drew reference polygons]</span></td></tr>
   </table></div>
   <p><strong>Training and validation.</strong> Reference fields were split <em>by field</em> (not by pixel): about 70% of fields for training and 30% held back for testing, separately for each class.</p>
 </section>
